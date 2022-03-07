@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="UTF-8">
+<title>[일 정 등 록]</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Noto+Sans+KR&display=swap');
+
+    * {
+        font-family: 'Noto Sans KR', sans-serif;
+
+    }
+
+	body::before {
+		content : "";
+		position: absolute; z-index: -1;
+		top: 0; right: 0; bottom: 0; left: 0;
+		
+	}
+	
+	
+	th {
+		width: 10%; /*전체 화면에서 차지하는 비율 반응형*/
+		position: relative;
+		left: 350px;
+		top: 100px;
+	}
+
+	td {
+        padding: 20px 0px; /* 컨텐츠와 테두리 사이여백*/
+		/*border: solid black;*/
+		position: relative;
+		top: 100px;
+		text-align: center;
+    }
+
+	input, textarea {
+		background-color: transparent;
+		border: none;
+		border-bottom: 1px solid #999;
+		outline: none;
+	}
+
+    button {
+		font-size: medium;
+		border: none;
+    	border-radius: 25px; /*테두리 둥글게*/
+		margin: 10px; /*버튼과 td사이 여백*/
+		height: 40px;
+		width: 90px;
+    }
+
+    .button {
+        background-color: #123cea;
+		color: white;
+    }
+
+	.text {
+		/*border: none;*/
+		width: 50%;
+		height: 50%;
+		/*padding: 20px 10px;*/
+	}
+
+	.when {
+		/*border: none;*/
+		width: 10%;
+		height: 10%;
+		position: relative;
+		right: 273px;
+	}
+
+	img, th {
+		vertical-align: middle;
+	}
+
+	.new {
+		text-align: center;
+	}
+</style>
+</head>
+<body>
+<div>
+	<form th:action="@{/ScheduleManagement/addSchedule}" th:method="POST" enctype="multipart/form-data" autocomplete="off" th:onsubmit="return validCheck()">
+		<table>
+			<tr>
+				<th><img src = "https://cdn4.iconfinder.com/data/icons/basic-ui-2-line/32/list-mark-sign-option-menu-512.png" width="14%" height="14%"> 제목</th>
+				<td colspan="2"><input type = "text" name = "title" id = "title" placeholder = "제목을 입력해주세요." class = "text"></td>
+			</tr>
+			<tr>
+				<th><img src = "https://cdn0.iconfinder.com/data/icons/mobile-basic-vol-1/32/Calendar-128.png" width="14%" height="14%"> 시작날짜</th>
+				<td colspan="2"><input type = "date" name = "startDate" id = "startDate" class = "when"></td>
+			</tr>
+			<tr>
+				<th><img src = "https://cdn0.iconfinder.com/data/icons/mobile-basic-vol-1/32/Calendar-128.png" width="14%" height="14%"> 시작날짜</th>
+				<td colspan="2"><input type = "date" name = "endDate" id = "endDate" class = "when"></td>
+			</tr>
+			<tr>
+				<th><img src = "https://cdn0.iconfinder.com/data/icons/mobile-basic-vol-1/32/Paper_A4-512.png" width="14%" height="14%"> 내용</th>
+				<td colspan="2">
+					<textarea rows = "5" cols = "30" name = "content" id = "content" placeholder = "내용을 입력해주세요." class = "text"></textarea>	
+				</td>
+			</tr>
+			<tr>
+				<th><img src = "https://cdn0.iconfinder.com/data/icons/mobile-basic-vol-1/32/Pin_Maps-512.png" width="15%" height="15%"> 장소</th>
+				<td colspan="2"><input type = "text" name = "place" id = "place" placeholder = "장소를 입력해주세요." class = "text"></td>
+			</tr>
+			<tr>
+				<th><img src = "https://cdn0.iconfinder.com/data/icons/mobile-basic-vol-1/32/Notification-512.png" width="14%" height="14%"> 중요</th>
+					<td colspan="2">
+						<input type = "radio" name = "importance" id = "importance" value=1>표시함
+						&nbsp;&nbsp;&nbsp;
+						<input type = "radio" name = "importance" id = "importance" value=2 checked>표시안함
+					</td>
+			</tr>
+			<tr>
+				<td colspan="3" class = "new">
+					<button type = "submit" class = "button">등록</button>&nbsp;
+					<button type = "reset" onclick = "location.href='/ScheduleManagement/'">취소</button>
+				</td>
+			</tr>
+		</table>
+	</form>
+</div>
+<script th:src="@{/js/addForm.js}"></script>
+</body>
+</html>

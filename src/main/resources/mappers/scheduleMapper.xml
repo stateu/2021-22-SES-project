@@ -1,0 +1,139 @@
+<!DOCTYPE mapper
+	PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+	"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+	
+<!-- Mapper 인터페이스엣 호출되는 메서드에 대한 실제 쿼리들이 들어있어 -->
+
+<!-- namespace에서 지정하는것 : mapper interface의 위치 -->
+<mapper namespace = "com.example.dao.ScheduleDAO">
+	<!-- 일정 등록 -->
+	<insert id="insertSchedule" parameterType="ScheduleVO">
+		insert into schedule(idx_num, userid, title, content, startdate, enddate, importance, place)
+		values(schedule_idx.nextval, #{userId}, #{title}, #{content}, #{startDate}, #{endDate}, #{importance}, #{place})
+	</insert>
+	
+	<!-- 일정 수정 -->
+	<update id="updateSchedule" parameterType="ScheduleVO">
+		update schedule
+		set
+			title = #{title},
+			content = #{content},
+			startdate = #{startDate},
+			enddate = #{endDate},
+			importance = #{importance},
+			place = #{place}
+		where
+			idx_num = #{idx_num}
+	</update>
+	
+	<!-- 일정 삭제 -->
+	<delete id="deleteSchedule" parameterType="int">
+		delete from schedule
+		where 
+			idx_num = #{idx_num}
+	</delete>
+	
+	<!-- 일정 상세 확인 -->
+	<select id="detailOne" parameterType="int" resultType="ScheduleVO">
+		select idx_num, title, to_char(startdate, 'yyyy-mm-dd') as startdate, to_char(enddate, 'yyyy-mm-dd') as enddate,userid, content, importance, place
+		from schedule
+		where idx_num = #{idx_num}
+	</select>
+	
+	<!-- 중요글 표시 (importance == 1) -->
+	<select id="importantSchedule" parameterType="string" resultType="ScheduleVO">
+		select idx_num, title, to_char(startdate, 'mm"월" dd"일"') as startdate, to_char(enddate, 'mm"월" dd"일"') as enddate, userid, content, importance, place
+		from schedule
+		where 
+			(
+			userid like #{targetId}
+			and
+			importance = 1 
+			and
+			enddate <![CDATA[>=]]> to_char(sysdate,'yyyy/mm/dd')
+			)
+			or
+			(
+			userid like #{targetId}
+			and
+			title like 'Birthday'
+			and
+			to_char(enddate, 'mm') = to_char(sysdate,'mm')
+			and
+			to_char(enddate, 'mm/dd') <![CDATA[>=]]> to_char(sysdate,'mm/dd')
+			)
+		order by startdate 
+	</select>
+	
+	<!-- 생일 띄우기 -->
+	<select id="searchBirth" parameterType="string" resultType="ScheduleVO">
+		select idx_num, title, to_char(startdate, 'mm"월" dd"일"') as startdate, to_char(enddate, 'mm"월" dd"일"') as enddate, userid, content, importance, place
+		from schedule
+		where
+			userid like #{targetId}
+			and
+			title like 'Birthday'
+			and
+			to_char(to_date(#{targetBirth}, 'yyyy-mm-dd'), 'mm') = to_char(sysdate, 'mm')
+	</select>
+	
+	<!-- 전체 일정 띄우기 (주간) -->
+	<select id="weeklySchedule" parameterType="string" resultType="ScheduleVO">
+		select idx_num, title, to_char(startdate, 'mm"월" dd"일"') as startdate, to_char(enddate, 'mm"월" dd"일"') as enddate, userid, content, importance, place
+		from schedule
+		where 
+			userid like #{targetId}
+			and
+			(
+			(enddate <![CDATA[>=]]> (select to_char(trunc(sysdate, 'iw'),'yyyy/mm/dd') from dual) 
+			and 
+			enddate <![CDATA[<=]]> (select to_char(trunc(sysdate, 'iw')+6, 'yyyy/mm/dd') from dual))
+			or
+			(startdate <![CDATA[>=]]> (select to_char(trunc(sysdate, 'iw'),'yyyy/mm/dd') from dual) 
+			and 
+			startdate <![CDATA[<=]]> (select to_char(trunc(sysdate, 'iw')+6, 'yyyy/mm/dd') from dual))
+			or
+			(startdate <![CDATA[<=]]> (select to_char(trunc(sysdate, 'iw'),'yyyy/mm/dd') from dual) 
+			and 
+			enddate <![CDATA[>=]]> (select to_char(trunc(sysdate, 'iw')+6, 'yyyy/mm/dd') from dual))
+			)
+		order by startdate
+	</select>
+	
+	<!-- 날짜로 일정 검색 -->
+	<select id="serachByDate" parameterType="string" resultType="ScheduleVO">
+		select idx_num, title, to_char(startdate, 'mm"월" dd"일"') as startdate, to_char(enddate, 'mm"월" dd"일"') as enddate, userid, content, importance, place
+		from schedule
+		where
+			(
+			userid like #{targetId}
+			and
+			startdate <![CDATA[<=]]> to_date(#{selectedDate}, 'yyyy-mm-dd')
+			and
+			enddate <![CDATA[>=]]> to_date(#{selectedDate}, 'yyyy-mm-dd')
+			)
+			or
+			(
+			userid like #{targetId}
+			and
+			title like 'Birthday'
+			and
+			to_char(enddate, 'mm/dd') = to_char(to_date(#{selectedDate},'yyyy-mm-dd'), 'mm/dd')
+			)
+	</select>
+	
+	<!-- 제목으로 일정 검색 -->
+	<select id="searchByTitle">
+		select idx_num, title, to_char(startdate, 'yyyy-mm-dd') as startdate, to_char(enddate, 'yyyy-mm-dd') as enddate, userid, content, importance, place
+		from schedule
+		where title like '%'||#{title}||'%'
+	</select>
+	
+	<!-- 장소로 일정 검색 -->
+	<select id="searchByPlace">
+		select idx_num, title, to_char(startdate, 'yyyy-mm-dd') as startdate, to_char(enddate, 'yyyy-mm-dd') as enddate, userid, content, importance, place
+		from schedule
+		where place like '%'||#{place}||'%'
+	</select>
+	
+</mapper>

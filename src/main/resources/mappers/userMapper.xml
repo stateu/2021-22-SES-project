@@ -1,0 +1,44 @@
+<!DOCTYPE mapper
+	PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+	"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+	
+<!-- Mapper인터페이스에서 호출되는 메서드에 대한 실제 쿼리들이 들어있음 -->
+
+<!-- namespace에서 지정하는 것 : 매퍼 인터페이스의 위치 -->
+<mapper namespace = "com.example.dao.UserDAO">
+	<insert id="insertUser" parameterType="UserVO">
+		INSERT INTO USERLIST(USERID,USERPW,NAME,USERPHONENUMBER,USERBIRTH)
+		VALUES(#{userId},#{userPw},#{name},#{phoneNumber},#{birth})
+	</insert>
+	
+	<select id="selectUser" resultType="UserVO" parameterType="UserVO">
+		SELECT USERID AS USERNAME; USERPW, ENABELD
+		FROM USERLIST
+		WHER USERID=#{userId}
+	</select>
+	
+	<select id="findById" resultType="userVO" parameterType="string">
+		SELECT userid, userpw, to_char(userbirth, 'yyyy-mm-dd') as birth
+		FROM userlist
+		WHERE USERID=#{userId}
+	</select>
+	
+	<select id="getuserId"  resultType="UserVO" parameterType="UserVO">
+		SELECT USERID, NAME
+		FROM USERLIST
+		WHERE USERPHONENUMBER=#{phoneNumber}
+		AND USERBIRTH=#{birth}
+	</select>
+	
+	<update id="updateUser" parameterType="userVO">
+		UPDATE USERLIST
+		SET USERPW=#{userPw}
+		WHERE USERID=#{userId}
+	</update>
+	
+	<update id="resetuserPw" parameterType="userVO">
+		UPDATE USERLIST
+		SET USERPW=#{userPw}
+		WHERE USERID=#{userId} AND USERPHONENUMBER=#{phoneNumber} AND USERBIRTH=#{birth}
+	</update>
+</mapper>

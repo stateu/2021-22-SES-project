@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>[상 세 일 정]</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Noto+Sans+KR&display=swap');
+
+    * {
+        font-family: 'Noto Sans KR', sans-serif;
+      margin: 0;
+    }
+
+   table {
+      margin: 20px auto;
+      border-spacing: 20px;
+   }
+
+   th {
+      width: 10%;
+      position: relative;
+      left: 500px;
+      top: 30px;
+   }
+
+   td {
+      width: 40px;
+        padding: 20px 0px; /* 컨텐츠와 테두리 사이여백*/
+      /* border: solid black; */
+      position: relative;
+      top: 30px;
+      right: 50px;
+      text-align: center;
+    }
+
+    a {
+      font-size: small;
+      border-radius: 25px; /*테두리 둥글게*/
+      padding: 10px; /*버튼과 td사이 여백*/
+      height: 40px;
+      width: 75px;
+      text-align: center;
+      background-color: #ebedeb;
+      position: relative;
+      left: 700px;
+      text-decoration: none;
+    }
+
+    .button {
+        background-color: #123cea;
+      color: white;
+    }
+
+    .home {
+        background-color: white;
+        border: none;
+        position: relative;
+        right: 100px;
+        padding: 5px;
+    }
+
+   img, th {
+      vertical-align: middle;
+   }
+
+</style>
+</head>
+<body>
+<div>
+   <button type="button" onclick="location.href='/ScheduleManagement/'" class = "home"><img src = "https://cdn2.iconfinder.com/data/icons/basic-4/512/home-256.png" width="14%" height="14%"></button>
+   <table>
+      <tr>
+         <th><img src = "https://cdn4.iconfinder.com/data/icons/basic-ui-2-line/32/list-mark-sign-option-menu-512.png" width="14%" height="14%"> 제목</th>
+         <td th:text = "${onePlan.title}"></td>
+      </tr>
+      <tr>
+         <th><img src = "https://cdn0.iconfinder.com/data/icons/mobile-basic-vol-1/32/Calendar-128.png" width="14%" height="14%"> 시작일</th>
+         <td th:text = "${onePlan.startDate}"></td>
+      </tr>
+      <tr>
+         <th><img src = "https://cdn0.iconfinder.com/data/icons/mobile-basic-vol-1/32/Calendar-128.png" width ="14%" height="14%"> 종료일</th>
+         <td th:text = "${onePlan.endDate}"></td>
+      </tr>
+      <tr>
+         <th><img src = "https://cdn0.iconfinder.com/data/icons/mobile-basic-vol-1/32/Paper_A4-512.png" width="14%" height="14%"> 내용</th>
+         <td th:text="${onePlan.content}"></td>
+      </tr>
+      <tr>
+         <th><img src = "https://cdn0.iconfinder.com/data/icons/mobile-basic-vol-1/32/Pin_Maps-512.png" width="15%" height="15%"> 장소</th>
+         <td th:text="${onePlan.place}"></td>
+      </tr>
+      <tr>
+         <th><img src = "https://cdn0.iconfinder.com/data/icons/mobile-basic-vol-1/32/Notification-512.png" width="14%" height="14%"> 중요도</th>
+         <td> <!-- th:if에 따라서 한가지 아이콘만 나와야 하는거죠..? 지금은 두개가 동시에 나오는 상태인데 이 부분은 어떻게 하면 좋을지 말씀해주세요! -->
+            <div th:if="${onePlan.importance} == 1">
+               <img src = "https://cdn1.iconfinder.com/data/icons/jumpicon-basic-ui-glyph-1/32/-_Star-Favorite-Featured-Famous-Super-512.png" width="2%" height="2%">
+            </div>
+            <div th:if="${onePlan.importance} != 1">
+                <img src = "https://cdn1.iconfinder.com/data/icons/jumpicon-basic-ui-glyph-1/32/-_Star-Favorite-Disable-Off-Inactive-512.png" width="2%" height="2%">
+            </div> 
+        </td>
+      </tr>
+   </table>
+</div>
+
+<div>
+   <a th:href="@{/ScheduleManagement/modifyScheduleForm(idx_num=${onePlan.idx_num})}" class = "button">수정하기</a>&nbsp;&nbsp;&nbsp;
+   <a th:href="@{/ScheduleManagement/deleteSchedule(idx_num=${onePlan.idx_num})}">삭제하기</a>
+</div>
+</body>
+</html>
